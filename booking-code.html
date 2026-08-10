@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enter your code — Shoko's Japanese Lessons</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="index.html" class="logo handwritten" style="color:inherit;">Shoko's<br>Japanese Lessons</a>
+    <a href="booking.html" class="back-link">&larr; Back to booking</a>
+  </div>
+</header>
+
+<section class="code-hero">
+  <div class="wrap">
+    <div class="code-panel" id="codePanel">
+      <h1 class="handwritten" id="codeTitle">Welcome back!</h1>
+      <div class="code-underline" id="codeUnderline"></div>
+      <p class="code-subtitle" id="codeSubtitle">Enter the code Shoko shared with you to book your lesson.</p>
+
+      <div id="codeFormArea">
+        <input type="text" class="code-input" id="codeInput" placeholder="Your code" autocomplete="off">
+        <p class="code-error-text" id="codeErrorText" hidden>That code doesn't look right &mdash; try again?</p>
+
+        <div class="code-actions">
+          <button type="button" class="btn btn-primary" id="codeSubmitBtn">
+            Continue
+            <img src="assets/icon_arrow_right.svg" class="btn-icon" alt="">
+          </button>
+
+          <p class="code-helper" id="codeHelperDefault">
+            Don't have your code? <a href="mailto:shokojapanesetgt@gmail.com" class="code-helper-link">Contact Shoko</a>
+          </p>
+
+          <div class="code-helper-error" id="codeHelperError" hidden>
+            <span class="code-or">or</span>
+            <a href="mailto:shokojapanesetgt@gmail.com" class="btn btn-outline-dark">
+              Contact Shoko
+              <img src="assets/icon_mail_dark.svg" class="btn-icon" alt="">
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-actions" id="codeSuccessArea" hidden>
+        <a class="btn btn-primary" id="codeReopenLink" href="#" target="_blank" rel="noopener">
+          Open booking page
+          <img src="assets/icon_arrow_right.svg" class="btn-icon" alt="">
+        </a>
+        <p class="code-helper">
+          Trouble booking? <a href="mailto:shokojapanesetgt@gmail.com" class="code-helper-link">Contact Shoko</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="booking-note">
+  <svg class="booking-note-bg" preserveAspectRatio="none" viewBox="0 0 1516 261" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 13.4343H63.1667C126.333 13.4343 252.667 13.4343 379 10.5328C505.333 7.63126 631.667 1.82816 758 0.377389C884.333 -1.07338 1010.67 1.82816 1137 6.18048C1263.33 10.5328 1389.67 16.3359 1452.83 19.2374L1516 22.139V261H1452.83C1389.67 261 1263.33 261 1137 261C1010.67 261 884.333 261 758 261C631.667 261 505.333 261 379 261C252.667 261 126.333 261 63.1667 261H0L0 13.4343Z" style="fill:var(--blue)"/></svg>
+  <div class="wrap booking-note-row">
+    <img src="assets/booking_smiley_tight.png" class="booking-note-smiley" alt="">
+    <div class="booking-note-text">
+      <h2 class="handwritten">Need help with your code?</h2>
+      <p>If you have any questions, feel free to reach out!</p>
+    </div>
+    <a class="btn btn-outline booking-note-btn" href="mailto:shokojapanesetgt@gmail.com">
+      Contact me
+      <img src="assets/icon_mail.svg" class="btn-icon" alt="">
+    </a>
+  </div>
+</section>
+
+<div class="site-footer-base">
+  <div class="wrap footer-base-row">
+    <p class="footer-brand handwritten">Shoko's<br>Japanese Lessons</p>
+    <a class="footer-contact-item" href="mailto:shokojapanesetgt@gmail.com">
+      <img src="assets/icon_mail_dark.svg" alt="">
+      shokojapanesetgt@gmail.com
+    </a>
+    <p class="footer-contact-item">
+      <img src="assets/icon_location.svg" alt="">
+      Online lessons worldwide
+    </p>
+    <div class="footer-social">
+      <a href="https://www.instagram.com/jp.shoko/?hl=en" target="_blank" rel="noopener" aria-label="Instagram" class="footer-social-btn">
+        <img src="assets/icon_instagram.svg" alt="">
+      </a>
+      <a href="https://www.youtube.com/@CHOCO98131" target="_blank" rel="noopener" aria-label="YouTube" class="footer-social-btn">
+        <img src="assets/icon_youtube.svg" alt="">
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var input = document.getElementById('codeInput');
+  var submitBtn = document.getElementById('codeSubmitBtn');
+  var panel = document.getElementById('codePanel');
+  var title = document.getElementById('codeTitle');
+  var subtitle = document.getElementById('codeSubtitle');
+  var errorText = document.getElementById('codeErrorText');
+  var helperDefault = document.getElementById('codeHelperDefault');
+  var helperError = document.getElementById('codeHelperError');
+  var formArea = document.getElementById('codeFormArea');
+  var successArea = document.getElementById('codeSuccessArea');
+  var reopenLink = document.getElementById('codeReopenLink');
+
+  var BOOKING_URL = "https://calendar.app.google/iD777ugPei6K3zU29";
+
+  // Test code for trying the flow out. Swap for a real lookup later.
+  var VALID_CODE = "1a2b3c";
+  var isErrorState = false;
+
+  function setSubmitLabel(label) {
+    submitBtn.innerHTML = label + ' <img src="assets/icon_arrow_right.svg" class="btn-icon" alt="">';
+  }
+
+  function showError() {
+    isErrorState = true;
+    panel.classList.add('is-error');
+    title.textContent = "Hmm, that code doesn't look right";
+    subtitle.textContent = "Double-check the code Shoko sent you, or reach out below.";
+    input.placeholder = "XXXXXX";
+    input.value = "";
+    input.classList.add('error');
+    errorText.hidden = false;
+    helperDefault.hidden = true;
+    helperError.hidden = false;
+    setSubmitLabel("Try again");
+    input.focus();
+  }
+
+  function showDefault() {
+    isErrorState = false;
+    panel.classList.remove('is-error');
+    title.textContent = "Welcome back!";
+    subtitle.textContent = "Enter the code Shoko shared with you to book your lesson.";
+    input.placeholder = "Your code";
+    input.value = "";
+    input.classList.remove('error');
+    errorText.hidden = true;
+    helperDefault.hidden = false;
+    helperError.hidden = true;
+    setSubmitLabel("Continue");
+    input.focus();
+  }
+
+  function showSuccess() {
+    panel.classList.remove('is-error');
+    title.textContent = "You're in!";
+    subtitle.textContent = "We opened your booking page in a new tab.";
+    formArea.hidden = true;
+    reopenLink.href = BOOKING_URL;
+    successArea.hidden = false;
+  }
+
+  submitBtn.addEventListener('click', function () {
+    if (isErrorState) {
+      showDefault();
+      return;
+    }
+    var val = input.value.trim().toLowerCase();
+    if (val === VALID_CODE) {
+      window.open(BOOKING_URL, '_blank', 'noopener');
+      showSuccess();
+    } else {
+      showError();
+    }
+  });
+
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') submitBtn.click();
+  });
+})();
+</script>
+
+</body>
+</html>
