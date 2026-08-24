@@ -41,7 +41,19 @@
       </a>
     </div>
     <div class="hero-visual">
-      <img src="assets/hero_visual.png" alt="Shoko, your Japanese teacher, in a kimono, waving hello, with a paper fan and onigiri illustration">
+      <img src="assets/hero_visual_base.png" alt="Shoko, your Japanese teacher, in a kimono, waving hello">
+      <button type="button" class="hero-hotspot hero-hotspot--fan" data-word="uchiwa" aria-label="Learn the Japanese word for this fan">
+        <img src="assets/hero_fan_hotspot.png" alt="">
+        <span class="hero-hotspot-spark hero-hotspot-spark--fan" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="hero-hotspot hero-hotspot--onigiri" data-word="onigiri" aria-label="Learn the Japanese word for this onigiri">
+        <img src="assets/hero_onigiri_hotspot.png" alt="">
+        <span class="hero-hotspot-spark hero-hotspot-spark--onigiri" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="hero-hotspot hero-hotspot--flower" data-word="sakura" aria-label="Learn the Japanese word for this flower">
+        <img src="assets/hero_flower_hotspot.png" alt="">
+        <span class="hero-hotspot-spark hero-hotspot-spark--flower" aria-hidden="true"></span>
+      </button>
     </div>
   </div>
 </section>
@@ -240,6 +252,18 @@
   </div>
 </div>
 
+<div class="word-modal-overlay" id="wordModalOverlay">
+  <div class="word-modal" role="dialog" aria-modal="true" aria-labelledby="wordModalKanji">
+    <button type="button" class="word-modal-close" id="wordModalClose" aria-label="Close">&times;</button>
+    <img class="word-modal-icon" id="wordModalIcon" src="" alt="">
+    <p class="word-modal-kanji" id="wordModalKanji"></p>
+    <p class="word-modal-reading" id="wordModalReading"></p>
+    <div class="word-modal-divider"></div>
+    <p class="word-modal-meaning" id="wordModalMeaning"></p>
+    <p class="word-modal-note" id="wordModalNote"></p>
+  </div>
+</div>
+
 <script>
   document.querySelectorAll('.show-more-btn').forEach(function (btn) {
     var card = btn.closest('.review-card');
@@ -307,6 +331,85 @@
   });
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') closeModal();
+  });
+
+  var wordData = {
+    uchiwa: {
+      icon: 'assets/hero_fan_hotspot.png',
+      kanji: '団扇（うちわ）',
+      reading: 'uchiwa',
+      meaning: 'A flat, round fan — waved by hand to cool off (not the folding kind).',
+      note: 'Common in Japanese summers and festivals. Shops often hand them out free, printed with ads.'
+    },
+    onigiri: {
+      icon: 'assets/hero_onigiri_hotspot.png',
+      kanji: 'おにぎり（お握り）',
+      reading: 'onigiri',
+      meaning: 'A rice ball, usually triangular, wrapped in nori seaweed with a filling inside.',
+      note: 'A Japanese lunchbox and convenience-store staple. Pickled plum, salmon, and tuna mayo are the classic fillings.'
+    },
+    sakura: {
+      icon: 'assets/hero_flower_hotspot.png',
+      kanji: '桜（さくら）',
+      reading: 'sakura',
+      meaning: 'Cherry blossom — Japan\'s most iconic flower, in bloom for just a week or two each spring.',
+      note: 'Friends, families, and coworkers gather for hanami (flower-viewing) picnics under the trees while they bloom.'
+    }
+  };
+
+  var wordOverlay = document.getElementById('wordModalOverlay');
+  var wordIcon = document.getElementById('wordModalIcon');
+  var wordKanji = document.getElementById('wordModalKanji');
+  var wordReading = document.getElementById('wordModalReading');
+  var wordMeaning = document.getElementById('wordModalMeaning');
+  var wordNote = document.getElementById('wordModalNote');
+  var wordCloseBtn = document.getElementById('wordModalClose');
+
+  function openWordModal(key) {
+    var data = wordData[key];
+    if (!data) return;
+    wordIcon.src = data.icon;
+    wordKanji.textContent = data.kanji;
+    wordReading.textContent = data.reading;
+    wordMeaning.textContent = data.meaning;
+    wordNote.textContent = data.note;
+    wordOverlay.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeWordModal() {
+    wordOverlay.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+
+  var heroHotspots = document.querySelectorAll('.hero-hotspot');
+
+  heroHotspots.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      openWordModal(btn.getAttribute('data-word'));
+    });
+  });
+
+  // One-time intro nudge: wiggle each hotspot in turn shortly after the
+  // page loads, so first-time visitors notice they're tappable.
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    heroHotspots.forEach(function (btn, i) {
+      window.setTimeout(function () {
+        btn.classList.add('intro-wiggle');
+        btn.addEventListener('animationend', function handler() {
+          btn.classList.remove('intro-wiggle');
+          btn.removeEventListener('animationend', handler);
+        });
+      }, 900 + i * 220);
+    });
+  }
+
+  wordCloseBtn.addEventListener('click', closeWordModal);
+  wordOverlay.addEventListener('click', function (e) {
+    if (e.target === wordOverlay) closeWordModal();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeWordModal();
   });
 
   var navToggle = document.getElementById('navToggle');
