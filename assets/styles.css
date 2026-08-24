@@ -153,6 +153,11 @@ a { color: inherit; text-decoration: none; }
   font-size: 17px;
 }
 
+.site-header .nav-cta {
+  background: #a8cf45;
+  color: var(--dark);
+}
+
 .back-link {
   font-weight: 700;
   font-size: 17px;
