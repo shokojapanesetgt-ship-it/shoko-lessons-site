@@ -172,9 +172,35 @@ a { color: inherit; text-decoration: none; }
   flex-wrap: wrap;
 }
 
+/* Wider side margins just for the hero row (desktop/tablet only — mobile
+   stacks the columns, so it keeps the normal .wrap padding) pull the copy
+   and the illustration in closer to each other. */
+@media (min-width: 861px) {
+  .hero .wrap {
+    padding-left: 80px;
+    padding-right: 80px;
+  }
+}
+
 .hero-copy {
   flex: 1 1 480px;
   max-width: 614px;
+}
+
+@media (min-width: 861px) {
+  /* The headline column was wider than the text actually needs, which is
+     what read as a big gap before the illustration. Narrowing it (instead
+     of shrinking the illustration) closes that gap. */
+  .hero-copy {
+    max-width: 520px;
+  }
+
+  /* Keep "Let's enjoy Japanese" on one line even though the column above
+     is narrower than the text — it can overflow into the open space
+     before the illustration rather than wrapping a third line. */
+  .hero-line1 {
+    white-space: nowrap;
+  }
 }
 
 .hero-headline {
