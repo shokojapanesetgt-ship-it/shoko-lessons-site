@@ -32,7 +32,7 @@
   <div class="wrap">
     <div class="hero-copy">
       <h1 class="hero-headline handwritten">
-        Let's <span class="word-enjoy">enjoy<img src="assets/hero_deco_underline.svg" class="underline-deco" alt=""></span> Japanese together&nbsp;!!
+        Let's <span class="word-enjoy">enjoy<img src="assets/hero_deco_underline.svg" class="underline-deco" alt=""></span> Japanese together&nbsp;!
       </h1>
       <p class="hero-subtext">Friendly conversations, practical Japanese, and lessons made for you</p>
       <a href="booking.html" class="btn btn-primary">
@@ -197,7 +197,10 @@
   <svg class="footer-cta-bg" preserveAspectRatio="none" viewBox="0 0 1522 397" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <path fill-rule="evenodd" clip-rule="evenodd" d="M0 37.3632L63.4167 25.946C126.833 14.5288 253.667 -8.3055 380.5 3.11166C507.333 14.5288 658.667 44.9065 785.5 56.3237C912.333 67.7409 1014.67 37.3632 1141.5 37.3632C1268.33 37.3632 1395.17 68.2691 1458.58 79.6863L1490.29 85.3949L1522 91.1035V397H1458.58C1395.17 397 1268.33 397 1141.5 397C1014.67 397 887.833 397 761 397C634.167 397 507.333 397 380.5 397C253.667 397 126.833 397 63.4167 397H1.53597e-05L0 37.3632Z" style="fill:var(--blue)"/>
   </svg>
-  <img src="assets/tail_tassel_v2.png" class="tail-icon" alt="">
+  <button type="button" class="hero-hotspot footer-hotspot" data-word="teruterubozu" aria-label="Learn the Japanese word for this charm">
+    <img src="assets/tail_tassel_v2.png" class="tail-icon" alt="">
+    <span class="hero-hotspot-spark hero-hotspot-spark--tassel" aria-hidden="true"></span>
+  </button>
   <div class="wrap">
     <h2 class="handwritten heading-tracked">Ready to enjoy Japanese together?</h2>
     <a href="booking.html" class="btn nav-cta" style="background:#fefcf8;color:#1a1a1a;padding:16px 32px;font-size:18px;">
@@ -354,6 +357,13 @@
       reading: 'sakura',
       meaning: 'Cherry blossom — Japan\'s most iconic flower, in bloom for just a week or two each spring.',
       note: 'Friends, families, and coworkers gather for hanami (flower-viewing) picnics under the trees while they bloom.'
+    },
+    teruterubozu: {
+      icon: 'assets/tail_tassel_v2.png',
+      kanji: 'てるてる坊主',
+      reading: 'teru teru bouzu',
+      meaning: 'A handmade paper or cloth doll hung by a window to wish for sunny weather.',
+      note: 'Traditionally hung the night before a school trip or outdoor event — and the subject of a well-known children\'s song.'
     }
   };
 
@@ -382,26 +392,62 @@
     document.body.style.overflow = '';
   }
 
-  var heroHotspots = document.querySelectorAll('.hero-hotspot');
+  var allHotspots = document.querySelectorAll('.hero-hotspot');
+  var heroVisual = document.querySelector('.hero-visual');
+  var heroHotspots = document.querySelectorAll('.hero-visual .hero-hotspot');
+  var heroBaseImg = heroVisual ? heroVisual.querySelector('img') : null;
+  var footerHotspot = document.querySelector('.footer-hotspot');
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  heroHotspots.forEach(function (btn) {
+  allHotspots.forEach(function (btn) {
     btn.addEventListener('click', function () {
       openWordModal(btn.getAttribute('data-word'));
     });
   });
 
-  // One-time intro nudge: wiggle each hotspot in turn shortly after the
-  // page loads, so first-time visitors notice they're tappable.
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    heroHotspots.forEach(function (btn, i) {
+  // Reveal a set of hotspots together and give each a one-time wiggle in
+  // turn, so first-time visitors notice they're tappable.
+  function revealHotspots(btns) {
+    btns.forEach(function (btn, i) {
+      if (btn.classList.contains('is-visible')) return;
+      btn.classList.add('is-visible');
+      if (reduceMotion) return;
       window.setTimeout(function () {
         btn.classList.add('intro-wiggle');
         btn.addEventListener('animationend', function handler() {
           btn.classList.remove('intro-wiggle');
           btn.removeEventListener('animationend', handler);
         });
-      }, 900 + i * 220);
+      }, 400 + i * 220);
     });
+  }
+
+  // Keep the hero trio invisible until the base photo has actually finished
+  // loading, so they never flash in ahead of the picture they sit on top of.
+  if (heroBaseImg) {
+    if (heroBaseImg.complete) {
+      revealHotspots(heroHotspots);
+    } else {
+      heroBaseImg.addEventListener('load', function () { revealHotspots(heroHotspots); });
+    }
+  }
+
+  // The footer charm lives below the fold — reveal it (with the same
+  // one-time wiggle) the moment it scrolls into view instead of on load.
+  if (footerHotspot) {
+    if ('IntersectionObserver' in window) {
+      var footerObserver = new IntersectionObserver(function (entries, obs) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            revealHotspots([footerHotspot]);
+            obs.disconnect();
+          }
+        });
+      }, { threshold: 0.4 });
+      footerObserver.observe(footerHotspot);
+    } else {
+      revealHotspots([footerHotspot]);
+    }
   }
 
   wordCloseBtn.addEventListener('click', closeWordModal);
