@@ -406,6 +406,15 @@
     });
   });
 
+  function wiggleHotspot(btn) {
+    if (btn.classList.contains('intro-wiggle')) return;
+    btn.classList.add('intro-wiggle');
+    btn.addEventListener('animationend', function handler() {
+      btn.classList.remove('intro-wiggle');
+      btn.removeEventListener('animationend', handler);
+    });
+  }
+
   // Reveal a set of hotspots together and give each a one-time wiggle in
   // turn, so first-time visitors notice they're tappable.
   function revealHotspots(btns) {
@@ -413,14 +422,20 @@
       if (btn.classList.contains('is-visible')) return;
       btn.classList.add('is-visible');
       if (reduceMotion) return;
-      window.setTimeout(function () {
-        btn.classList.add('intro-wiggle');
-        btn.addEventListener('animationend', function handler() {
-          btn.classList.remove('intro-wiggle');
-          btn.removeEventListener('animationend', handler);
-        });
-      }, 400 + i * 220);
+      window.setTimeout(function () { wiggleHotspot(btn); }, 400 + i * 220);
     });
+  }
+
+  // Keep reminding people every so often — a one-time wiggle on load is
+  // easy to miss, so every few seconds nudge whichever hotspots are
+  // currently visible, staggered like the intro.
+  if (!reduceMotion) {
+    window.setInterval(function () {
+      allHotspots.forEach(function (btn, i) {
+        if (!btn.classList.contains('is-visible')) return;
+        window.setTimeout(function () { wiggleHotspot(btn); }, i * 220);
+      });
+    }, 3500);
   }
 
   // Keep the hero trio invisible until the base photo has actually finished
